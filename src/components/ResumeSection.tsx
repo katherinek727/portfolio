@@ -18,10 +18,9 @@ const ResumeSection = () => {
 
   const handleDownload = () => {
     setIsDownloading(true);
-    // Small delay for spinner, then open the actual resume PDF
     setTimeout(() => {
       setIsDownloading(false);
-      window.open('https://onedrive.live.com/?id=%2Fpersonal%2F1EF6A5A313429AAA%2FDocuments%2FKatherine%5FKowalski%5FFull%5FStack%5FDeveloper%5FResume%2Epdf&listurl=%2Fpersonal%2F1EF6A5A313429AAA%2FDocuments&parent=%2Fpersonal%2F1EF6A5A313429AAA%2FDocuments', '_blank');
+      window.open('/resume.pdf', '_blank');
     }, 500);
   };
 

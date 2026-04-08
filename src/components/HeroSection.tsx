@@ -18,19 +18,33 @@ const HeroSection = () => {
   const [showCursor, setShowCursor] = useState(true);
   const typingRef = useRef<ReturnType<typeof setTimeout>>();
 
-  // Typing effect — runs once on mount
+  // Typing effect — type → pause → delete → pause → repeat
   useEffect(() => {
     let i = 0;
-    setTypedName('');
-    const type = () => {
-      if (i <= NAME.length) {
-        setTypedName(NAME.slice(0, i));
+    let deleting = false;
+
+    const tick = () => {
+      if (!deleting) {
         i++;
-        typingRef.current = setTimeout(type, 110);
+        setTypedName(NAME.slice(0, i));
+        if (i === NAME.length) {
+          // pause before deleting
+          typingRef.current = setTimeout(() => { deleting = true; tick(); }, 2000);
+          return;
+        }
+      } else {
+        i--;
+        setTypedName(NAME.slice(0, i));
+        if (i === 0) {
+          // pause before retyping
+          typingRef.current = setTimeout(() => { deleting = false; tick(); }, 600);
+          return;
+        }
       }
+      typingRef.current = setTimeout(tick, deleting ? 70 : 110);
     };
-    // Small delay before starting so the section entrance animation plays first
-    typingRef.current = setTimeout(type, 800);
+
+    typingRef.current = setTimeout(tick, 800);
     return () => clearTimeout(typingRef.current);
   }, []);
 
