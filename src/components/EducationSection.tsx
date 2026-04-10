@@ -148,14 +148,14 @@ const EducationSection = () => {
                       width: '80px',
                       height: '80px',
                       minWidth: '80px',
-                      background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%)',
+                      background: 'rgba(232, 196, 184, 0.08)',
                       borderRadius: 'var(--border-radius)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontSize: '2.5rem',
-                      border: '1px solid rgba(0, 212, 255, 0.2)',
-                      boxShadow: '0 0 30px rgba(0, 212, 255, 0.1)',
+                      border: '1px solid rgba(232, 196, 184, 0.2)',
+                      boxShadow: '0 0 16px rgba(232, 196, 184, 0.1)',
                     }}
                   >
                     {item.icon}
@@ -199,14 +199,14 @@ const EducationSection = () => {
                         <span
                           style={{
                             display: 'inline-block',
-                            background: 'rgba(0, 212, 255, 0.1)',
-                            color: 'var(--accent-cyan)',
+                            background: 'rgba(232, 196, 184, 0.08)',
+                            color: 'var(--text-secondary)',
                             padding: '0.35rem 1rem',
                             borderRadius: '50px',
                             fontSize: '0.85rem',
-                            fontWeight: 600,
+                            fontWeight: 500,
                             marginBottom: '0.5rem',
-                            border: '1px solid rgba(0, 212, 255, 0.2)',
+                            border: '1px solid rgba(232, 196, 184, 0.2)',
                           }}
                         >
                           {item.year}
@@ -252,34 +252,49 @@ const EducationSection = () => {
               <div
                 className="glass-card"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(0, 212, 255, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%)',
-                  border: '1px solid rgba(0, 212, 255, 0.2)',
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
                 }}
               >
                 <h5
                   style={{
                     fontFamily: 'var(--font-heading)',
-                    color: 'var(--accent-cyan)',
-                    marginBottom: '1rem',
+                    fontSize: '1.8rem',
+                    fontStyle: 'italic',
+                    fontWeight: 500,
+                    marginBottom: '1.5rem',
                     textAlign: 'center',
                   }}
                 >
-                  🏆 Academic Achievements
+                  🏆{' '}
+                  <span style={{
+                    background: 'var(--accent-gradient)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    filter: 'drop-shadow(0 0 12px rgba(232, 196, 184, 0.4))',
+                  }}>
+                    Academic Achievements
+                  </span>
                 </h5>
-                <Row>
+                <Row className="align-items-stretch">
                   {[
                     { label: 'Coding Competition', value: '3 Wins' },
                     { label: 'Hackathon Wins', value: '2 Awards' },
                     { label: 'Research Paper', value: '1 Published' },
                     { label: 'Certifications', value: '5+ Completed' },
                   ].map((achievement, idx) => (
-                    <Col sm={6} md={3} key={idx} className="text-center mb-3 mb-md-0">
+                    <Col sm={6} md={3} key={idx} className="text-center mb-3 mb-md-0 d-flex">
                       <motion.div
                         whileHover={{ scale: 1.05 }}
                         style={{
-                          padding: '1rem',
+                          padding: '1.75rem 1rem',
                           borderRadius: 'var(--border-radius-sm)',
                           background: 'rgba(0, 0, 0, 0.2)',
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                         }}
                       >
                         <h3
@@ -289,6 +304,7 @@ const EducationSection = () => {
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             marginBottom: '0.25rem',
+                            fontSize: '2.2rem',
                           }}
                         >
                           {achievement.value}

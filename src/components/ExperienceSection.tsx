@@ -65,8 +65,8 @@ const ExperienceSection = () => {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'experience': return '#e8c4b8';
-      case 'project': return '#c49ab0';
+      case 'experience': return '#e8c4b8'; // warm champagne
+      case 'project': return '#7eb8d4';    // soft blue
       default: return '#e8c4b8';
     }
   };
@@ -98,15 +98,13 @@ const ExperienceSection = () => {
               { type: 'project', label: 'Key Projects' },
             ].map((item) => (
               <div key={item.type} className="d-flex align-items-center gap-2">
-                <span
-                  style={{
-                    width: '12px',
-                    height: '12px',
-                    borderRadius: '50%',
-                    background: getTypeColor(item.type),
-                    boxShadow: `0 0 10px ${getTypeColor(item.type)}50`,
-                  }}
-                />
+                <svg width="14" height="14" viewBox="0 0 14 14">
+                  <polygon
+                    points="7,0 8.5,5.5 14,5.5 9.5,8.5 11,14 7,10.5 3,14 4.5,8.5 0,5.5 5.5,5.5"
+                    fill={getTypeColor(item.type)}
+                    style={{ filter: `drop-shadow(0 0 4px ${getTypeColor(item.type)})` }}
+                  />
+                </svg>
                 <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                   {item.label}
                 </span>
@@ -161,15 +159,13 @@ const ExperienceSection = () => {
                   <div className="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
                     <div>
                       <div className="d-flex align-items-center gap-2 mb-1">
-                        <span
-                          style={{
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            background: getTypeColor(item.type),
-                            boxShadow: `0 0 8px ${getTypeColor(item.type)}`,
-                          }}
-                        />
+                        <svg width="10" height="10" viewBox="0 0 14 14">
+                          <polygon
+                            points="7,0 8.5,5.5 14,5.5 9.5,8.5 11,14 7,10.5 3,14 4.5,8.5 0,5.5 5.5,5.5"
+                            fill={getTypeColor(item.type)}
+                            style={{ filter: `drop-shadow(0 0 3px ${getTypeColor(item.type)})` }}
+                          />
+                        </svg>
                         <span
                           style={{
                             fontSize: '0.75rem',

@@ -20,6 +20,16 @@ const Index = () => {
   const rafRef = useRef<number>();
 
   useEffect(() => {
+    // Force hide cursor via JS — overrides all browser/library defaults
+    document.documentElement.style.cursor = 'none';
+    document.body.style.cursor = 'none';
+    return () => {
+      document.documentElement.style.cursor = '';
+      document.body.style.cursor = '';
+    };
+  }, []);
+
+  useEffect(() => {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext('2d')!;
 
@@ -54,6 +64,47 @@ const Index = () => {
           hue: (hue + Math.random() * 60 - 30 + 360) % 360,
         });
       }
+    };
+
+    const drawCursor = (cx: number, cy: number, hue: number) => {
+      ctx.save();
+      ctx.translate(cx, cy);
+
+      // Wand stick — longer diagonal line
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(22, 22);
+      ctx.strokeStyle = `hsl(${hue}, 85%, 88%)`;
+      ctx.lineWidth = 2.5;
+      ctx.shadowColor = `hsl(${hue}, 100%, 75%)`;
+      ctx.shadowBlur = 14;
+      ctx.stroke();
+
+      // Glowing dot at wand end
+      ctx.beginPath();
+      ctx.arc(22, 22, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = `hsl(${hue}, 90%, 85%)`;
+      ctx.shadowBlur = 10;
+      ctx.fill();
+
+      // Star tip at the top of the wand
+      ctx.translate(-1, -1);
+      ctx.rotate(Math.PI / 4);
+      ctx.beginPath();
+      for (let j = 0; j < 8; j++) {
+        const r = j % 2 === 0 ? 10 : 4;
+        const a = (j / 8) * Math.PI * 2 - Math.PI / 2;
+        j === 0
+          ? ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r)
+          : ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+      }
+      ctx.closePath();
+      ctx.fillStyle = `hsl(${hue}, 100%, 88%)`;
+      ctx.shadowColor = `hsl(${hue}, 100%, 80%)`;
+      ctx.shadowBlur = 22;
+      ctx.fill();
+
+      ctx.restore();
     };
 
     const draw = () => {
@@ -92,10 +143,16 @@ const Index = () => {
         ctx.restore();
       }
 
+      // Draw star cursor at mouse position
+      if (mouseRef.current.x > 0) {
+        drawCursor(mouseRef.current.x, mouseRef.current.y, hue);
+      }
+
       rafRef.current = requestAnimationFrame(draw);
     };
 
     rafRef.current = requestAnimationFrame(draw);
+
     return () => {
       window.removeEventListener('resize', resize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -107,7 +164,7 @@ const Index = () => {
       {/* Rainbow wave cursor trail */}
       <canvas
         ref={canvasRef}
-        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 9998 }}
+        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 9998, cursor: 'none' }}
       />
 
       <Suspense fallback={null}><ThreeBackground /></Suspense>
