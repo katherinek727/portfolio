@@ -265,8 +265,8 @@ const HeroSection = () => {
               <div
                 style={{
                   position: 'relative',
-                  width: '350px',
-                  height: '360px',
+                  width: '400px',
+                  height: '410px',
                   borderRadius: '50%',
                   overflow: 'hidden',
                   border: '4px solid var(--bg-dark)',

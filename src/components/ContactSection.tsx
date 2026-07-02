@@ -16,10 +16,10 @@ const socialLinks = [
 ];
 
 const otherContactInfo = [
-  {
-    label: 'Availability',
-    value: 'Open to full-stack developer roles',
-  },
+  // {
+  //   label: 'Availability',
+  //   value: 'Open to full-stack developer roles',
+  // },
   {
     label: 'Response Time',
     value: 'Usually within 24 hours',
