@@ -184,43 +184,20 @@ const ProjectsSection = () => {
                     style={{
                       padding: 0,
                       cursor: 'pointer',
-                      borderLeft: '3px solid var(--accent-cyan)',
                       overflow: 'hidden',
                       display: 'flex',
                       flexDirection: 'column',
-                      boxShadow: '0 4px 24px var(--accent-cyan-glow)',
-                      background: 'rgba(196, 168, 130, 0.03)',
+                      position: 'relative',
                     }}
                     onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)';
-                      (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 40px var(--accent-cyan-glow)';
-                      (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--accent-cyan)';
-                      (e.currentTarget as HTMLDivElement).style.background = 'rgba(196, 168, 130, 0.08)';
                       const img = (e.currentTarget as HTMLDivElement).querySelector('.project-card-img') as HTMLImageElement;
                       if (img) img.style.transform = 'scale(2.2) rotate(45deg)';
                     }}
                     onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
-                      (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 24px var(--accent-cyan-glow)';
-                      (e.currentTarget as HTMLDivElement).style.borderColor = 'var(--accent-cyan)';
-                      (e.currentTarget as HTMLDivElement).style.background = 'rgba(196, 168, 130, 0.03)';
                       const img = (e.currentTarget as HTMLDivElement).querySelector('.project-card-img') as HTMLImageElement;
                       if (img) img.style.transform = 'scale(1) rotate(0deg)';
                     }}
                   >
-                    {/* Left-edge glow accent */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '80px',
-                        height: '100%',
-                        background: 'linear-gradient(90deg, var(--accent-cyan-glow), transparent)',
-                        pointerEvents: 'none',
-                        zIndex: 0,
-                      }}
-                    />
 
                     {/* Image */}
                     <div style={{ position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
