@@ -20,12 +20,72 @@ const Index = () => {
   const rafRef = useRef<number>();
 
   useEffect(() => {
-    // Force hide cursor via JS — overrides all browser/library defaults
-    document.documentElement.style.cursor = 'none';
-    document.body.style.cursor = 'none';
+    // Function to hide/show cursor based on modal state
+    const updateCursor = () => {
+      // Check if any modal is open (Bootstrap adds 'modal-open' class to body)
+      const isModalOpen = document.body.classList.contains('modal-open');
+      // Also check for any visible modal element as backup
+      const visibleModal = document.querySelector('.modal.show');
+      const hasModal = isModalOpen || visibleModal;
+      const canvas = canvasRef.current;
+      
+      if (hasModal && canvas) {
+        // When modal is open: Hide canvas completely using visibility
+        // visibility: hidden removes element from accessibility tree and it doesn't affect cursor
+        canvas.style.visibility = 'hidden';
+        canvas.style.pointerEvents = 'none';
+        // Also set display: none for good measure
+        canvas.style.display = 'none';
+      } else if (canvas) {
+        // When no modal: Normal state - show canvas with custom cursor
+        canvas.style.visibility = 'visible';
+        canvas.style.display = 'block';
+        canvas.style.pointerEvents = 'none'; // Already set in JSX
+        canvas.style.zIndex = '99999'; // Normal z-index
+        canvas.style.cursor = 'none';
+      }
+    };
+
+    // Initial update
+    updateCursor();
+
+    // Create a MutationObserver to watch for modal-open class changes
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.attributeName === 'class') {
+          updateCursor();
+        }
+      }
+    });
+
+    // Start observing the body for class changes
+    observer.observe(document.body, { attributes: true });
+
+    // Also listen for Bootstrap modal events as backup
+    const handleModalShow = () => updateCursor();
+    const handleModalHide = () => updateCursor();
+    
+    document.addEventListener('show.bs.modal', handleModalShow);
+    document.addEventListener('hide.bs.modal', handleModalHide);
+    document.addEventListener('shown.bs.modal', handleModalShow);
+    document.addEventListener('hidden.bs.modal', handleModalHide);
+
     return () => {
-      document.documentElement.style.cursor = '';
-      document.body.style.cursor = '';
+      observer.disconnect();
+      document.removeEventListener('show.bs.modal', handleModalShow);
+      document.removeEventListener('hide.bs.modal', handleModalHide);
+      document.removeEventListener('shown.bs.modal', handleModalShow);
+      document.removeEventListener('hidden.bs.modal', handleModalHide);
+      
+      const canvas = canvasRef.current;
+      if (canvas) {
+        // Reset all styles
+        canvas.style.visibility = '';
+        canvas.style.display = '';
+        canvas.style.pointerEvents = '';
+        canvas.style.zIndex = '';
+        canvas.style.cursor = '';
+      }
     };
   }, []);
 
@@ -164,7 +224,7 @@ const Index = () => {
       {/* Rainbow wave cursor trail */}
       <canvas
         ref={canvasRef}
-        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 9998, cursor: 'none' }}
+        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 99999 }}
       />
 
       <Suspense fallback={null}><ThreeBackground /></Suspense>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { handleSectionNavClick, getNavOffset } from '../lib/scrollToSection';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { motion, useAnimationFrame } from 'framer-motion';
 
@@ -12,7 +13,7 @@ const navLinks = [
   { href: '#contact', label: 'Contact' },
 ];
 
-const ActiveNavLink = ({ label, href, onClick }: { label: string; href: string; onClick: () => void }) => {
+const ActiveNavLink = ({ label, href, onClick }: { label: string; href: string; onClick: (e: React.MouseEvent<HTMLElement>) => void }) => {
   const hueRef = useRef(0);
   const [hue, setHue] = useState(0);
 
@@ -51,20 +52,27 @@ const Navigation = () => {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+      const offset = getNavOffset() + 24;
       const sections = [...navLinks].map(l => l.href.substring(1)).reverse();
       for (const section of sections) {
         const el = document.getElementById(section);
-        if (el && el.getBoundingClientRect().top <= 150) {
+        if (el && el.getBoundingClientRect().top <= offset) {
           setActiveSection(section);
           break;
         }
       }
     };
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLinkClick = () => setExpanded(false);
+  const handleNavClick = (e: React.MouseEvent<HTMLElement>, href: string) => {
+    handleSectionNavClick(e, href, (sectionId) => {
+      setExpanded(false);
+      setActiveSection(sectionId);
+    });
+  };
 
   return (
     <motion.div
@@ -88,7 +96,7 @@ const Navigation = () => {
         }}
       >
         <Container>
-          <Navbar.Brand href="#hero" onClick={handleLinkClick} style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.2rem', textDecoration: 'none' }}>
+          <Navbar.Brand href="#hero" onClick={(e) => handleNavClick(e, '#hero')} style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.2rem', textDecoration: 'none' }}>
             <motion.span animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 3, repeat: Infinity }} style={{ background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{'<'}</motion.span>
             <span style={{ background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Portfolio</span>
             <motion.span animate={{ opacity: [0.6, 1, 0.6] }} transition={{ duration: 3, repeat: Infinity, delay: 1.5 }} style={{ background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{'/>'}</motion.span>
@@ -113,14 +121,14 @@ const Navigation = () => {
               {navLinks.map((link, index) => (
                 <motion.div key={link.href} initial={{ opacity: 0, y: -15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + index * 0.08 }}>
                   {activeSection === link.href.substring(1)
-                    ? <ActiveNavLink label={link.label} href={link.href} onClick={handleLinkClick} />
-                    : <Nav.Link href={link.href} onClick={handleLinkClick}>{link.label}</Nav.Link>
+                    ? <ActiveNavLink label={link.label} href={link.href} onClick={(e) => handleNavClick(e, link.href)} />
+                    : <Nav.Link href={link.href} onClick={(e) => handleNavClick(e, link.href)}>{link.label}</Nav.Link>
                   }
                 </motion.div>
               ))}
 
               <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.6 }} style={{ marginLeft: '0.5rem' }}>
-                <a href="#contact" onClick={handleLinkClick}
+                <a href="#contact" onClick={(e) => handleNavClick(e, '#contact')}
                   style={{ display: 'inline-block', padding: '0.5rem 1.25rem', background: 'rgba(232,196,184,0.08)', border: '1px solid rgba(232,196,184,0.3)', borderRadius: '50px', color: 'var(--accent-gold)', textDecoration: 'none', fontSize: '0.78rem', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', transition: 'all 0.3s ease' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'rgba(232,196,184,0.15)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'rgba(232,196,184,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}

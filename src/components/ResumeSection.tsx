@@ -5,10 +5,13 @@ import { useRef, useState } from 'react';
 const highlights = [
   'Web & Full-Stack Development',
   'Frontend Expertise',
-  'Frontend Expertise',
+  'Backend Expertise',
   'Performance & Optimization',
-  'Leadership & Mentoring',
-  'Problem Solving & Collaboration',
+  'Problem Solving',
+  'End‑to‑End Ownership',
+  'Cross‑Functional Collaboration',
+  'Code Quality & Maintainability',
+  'Scalable Architecture'
 ];
 
 const ResumeSection = () => {
@@ -20,7 +23,7 @@ const ResumeSection = () => {
     setIsDownloading(true);
     setTimeout(() => {
       setIsDownloading(false);
-      window.open('/resume.pdf', '_blank');
+      window.open('https://drive.google.com/file/d/1Pro0xuxXbGtD-rco847loM2-qiSSnK78/view', '_blank');
     }, 500);
   };
 
@@ -98,7 +101,7 @@ const ResumeSection = () => {
                   margin: '0 auto 2rem',
                 }}
               >
-                Computer Science & Engineering graduate passionate about building scalable, high-performance web applications. Experienced in leading full-stack projects, developing responsive web solutions, integrating AI features, and mentoring teams to deliver reliable, user-friendly software.
+                Computer Science graduate with 6+ years of experience building scalable, high‑performance SaaS platforms using FastAPI, Node.js, React, TypeScript, and AWS. I specialize in designing clean system architectures, optimizing API and SQL performance, and delivering production‑ready features end‑to‑end. I work fast, communicate clearly, and take full ownership of complex technical problems — from backend services and data modeling to frontend rendering and deployment automation.
               </p>
 
               <div className="mb-4">

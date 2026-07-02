@@ -1,6 +1,7 @@
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
+import { sendContactMessage } from '@/lib/sendContactMessage';
 
 const socialLinks = [
   {
@@ -12,32 +13,17 @@ const socialLinks = [
       </svg>
     ),
   },
-  {
-    name: 'LinkedIn',
-    url: 'https://www.linkedin.com/in/guruprasad-parashuram-pishe-78755425b/',
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-      </svg>
-    ),
-  },
- {
-  name: 'LeetCode',
-  url: 'https://leetcode.com/u/Gurupishe/',
-  icon: (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M16.88 3.549a1.25 1.25 0 0 0-1.768 0L6.01 12.652a3.75 3.75 0 0 0 0 5.303l2.033 2.033a3.75 3.75 0 0 0 5.303 0l2.033-2.033a1.25 1.25 0 1 0-1.768-1.768l-2.033 2.033a1.25 1.25 0 0 1-1.768 0l-2.033-2.033a1.25 1.25 0 0 1 0-1.768l9.102-9.103a1.25 1.25 0 0 0 0-1.767z" />
-      <path d="M9.197 5.368a1.25 1.25 0 1 0 0 2.5h3.303a1.25 1.25 0 0 0 0-2.5H9.197z" />
-    </svg>
-  ),
-},
+];
 
+const otherContactInfo = [
+  {
+    label: 'Availability',
+    value: 'Open to full-stack developer roles',
+  },
+  {
+    label: 'Response Time',
+    value: 'Usually within 24 hours',
+  },
 ];
 
 const ContactSection = () => {
@@ -51,6 +37,8 @@ const ContactSection = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitMode, setSubmitMode] = useState<'emailjs' | 'mailto' | null>(null);
+  const [submitError, setSubmitError] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {
@@ -76,19 +64,28 @@ const ContactSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setSubmitError('');
+
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setSubmitted(true);
-    setFormState({ name: '', email: '', subject: '', message: '' });
-    
-    setTimeout(() => setSubmitted(false), 5000);
+
+    try {
+      const mode = await sendContactMessage(formState);
+      setSubmitMode(mode);
+      setSubmitted(true);
+      setFormState({ name: '', email: '', subject: '', message: '' });
+      setErrors({});
+      setTimeout(() => {
+        setSubmitted(false);
+        setSubmitMode(null);
+      }, 6000);
+    } catch (error) {
+      console.error('Contact form submission failed:', error);
+      setSubmitError('Could not send your message. Please try again or email katherinek0727@outlook.com directly.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -126,7 +123,25 @@ const ContactSection = () => {
               animate={isInView ? { opacity: 1, x: 0, filter: 'blur(0px)' } : {}}
               transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={handleSubmit} noValidate>
+                {submitError && (
+                  <Alert variant="danger" className="mb-3" style={{ background: 'rgba(220, 53, 69, 0.12)', borderColor: 'rgba(220, 53, 69, 0.35)', color: 'var(--text-primary)' }}>
+                    {submitError}
+                  </Alert>
+                )}
+
+                {submitted && submitMode === 'mailto' && (
+                  <Alert variant="info" className="mb-3" style={{ background: 'rgba(232, 196, 184, 0.1)', borderColor: 'rgba(232, 196, 184, 0.3)', color: 'var(--text-primary)' }}>
+                    Your email app should open with the message ready to send. If it did not open, email katherinek0727@outlook.com directly.
+                  </Alert>
+                )}
+
+                {Object.keys(errors).length > 0 && (
+                  <Alert variant="warning" className="mb-3" style={{ background: 'rgba(255, 193, 7, 0.1)', borderColor: 'rgba(255, 193, 7, 0.35)', color: 'var(--text-primary)' }}>
+                    Please fix the highlighted fields below.
+                  </Alert>
+                )}
+
                 <Form.Group className="mb-3">
                   <Form.Control
                     type="text"
@@ -184,16 +199,15 @@ const ContactSection = () => {
                   </Form.Control.Feedback>
                 </Form.Group>
 
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <Button
+                  type="submit"
+                  className="btn-accent w-100"
+                  size="lg"
+                  disabled={isSubmitting || submitted}
+                  style={{ transition: 'transform 0.2s ease' }}
+                  onMouseEnter={(e) => { if (!isSubmitting && !submitted) e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
-                  <Button
-                    type="submit"
-                    className="btn-accent w-100"
-                    size="lg"
-                    disabled={isSubmitting || submitted}
-                  >
                     {isSubmitting ? (
                       <>
                         <span
@@ -221,8 +235,7 @@ const ContactSection = () => {
                     ) : (
                       'Send Message'
                     )}
-                  </Button>
-                </motion.div>
+                </Button>
               </Form>
             </motion.div>
           </Col>
@@ -255,7 +268,7 @@ const ContactSection = () => {
                     Email
                   </p>
                   <a
-                    href="mailto:john@developer.com"
+                    href="mailto:katherinek0727@outlook.com"
                     style={{
                       color: 'var(--accent-cyan)',
                       textDecoration: 'none',
@@ -280,6 +293,36 @@ const ContactSection = () => {
                     Available for remote work worldwide
                   </p>
                 </div>
+
+                {otherContactInfo.map((item) => (
+                  <div key={item.label} className="mb-3">
+                    <p
+                      style={{
+                        color: 'var(--text-muted)',
+                        marginBottom: '0.25rem',
+                        fontSize: '0.9rem',
+                      }}
+                    >
+                      {item.label}
+                    </p>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        style={{
+                          color: 'var(--accent-cyan)',
+                          textDecoration: 'none',
+                          fontSize: '1.1rem',
+                        }}
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      <p style={{ color: 'var(--text-secondary)', marginBottom: 0 }}>
+                        {item.value}
+                      </p>
+                    )}
+                  </div>
+                ))}
 
                 <div>
                   <p
@@ -311,16 +354,6 @@ const ContactSection = () => {
                   </div>
                 </div>
               </div>
-
-              <p
-                style={{
-                  color: 'var(--text-muted)',
-                  fontSize: '0.9rem',
-                  textAlign: 'center',
-                }}
-              >
-                I typically respond within 24 hours
-              </p>
             </motion.div>
           </Col>
         </Row>

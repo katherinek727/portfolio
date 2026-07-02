@@ -2,6 +2,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 import developerPhoto from '@/assets/developer-photo.png';
+import { handleSectionNavClick } from '@/lib/scrollToSection';
 
 const roles = [
   'Software Engineer',
@@ -111,7 +112,7 @@ const HeroSection = () => {
       }}
     >
       <Container>
-        <Row className="align-items-center justify-content-center">
+        <Row className="align-items-center justify-content-center pt-5">
           <Col lg={5} className="text-center text-lg-start mb-5 mb-lg-0">
             <motion.div
               variants={containerVariants}
@@ -211,6 +212,7 @@ const HeroSection = () => {
                   href="#resume"
                   className="btn-accent"
                   size="lg"
+                  onClick={(e) => handleSectionNavClick(e, '#resume')}
                 >
                   View Resume
                 </Button>
@@ -218,6 +220,7 @@ const HeroSection = () => {
                   href="#contact"
                   className="btn-outline-accent"
                   size="lg"
+                  onClick={(e) => handleSectionNavClick(e, '#contact')}
                 >
                   Contact Me
                 </Button>
@@ -325,6 +328,7 @@ const HeroSection = () => {
         >
           <motion.a
             href="#about"
+            onClick={(e) => handleSectionNavClick(e, '#about')}
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
             style={{
