@@ -35,7 +35,7 @@ const Footer = () => {
                 fontWeight: 600,
               }}
             >
-              Senior Full Stack Developer
+              Katherine
             </span>
           </p>
           <p
@@ -45,7 +45,7 @@ const Footer = () => {
               marginBottom: 0,
             }}
           >
-            © {currentYear} All rights reserved. Built with React, Bootstrap & Framer Motion
+            © {currentYear} All rights reserved. Built with React, TypeScript, Bootstrap & Framer Motion
           </p>
         </motion.div>
       </Container>
