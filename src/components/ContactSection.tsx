@@ -114,6 +114,34 @@ const ContactSection = () => {
     }
   };
 
+  const buttonContent = isSubmitting ? (
+    <>
+      <span
+        className="spinner-border spinner-border-sm me-2"
+        role="status"
+        aria-hidden="true"
+      />
+      Sending...
+    </>
+  ) : submitted ? (
+    <>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        className="me-2"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      Message Sent!
+    </>
+  ) : (
+    <>Send Message</>
+  );
+
   return (
     <section
       id="contact"
@@ -223,36 +251,16 @@ const ContactSection = () => {
                   size="lg"
                   disabled={isSubmitting || submitted}
                   style={{ transition: 'transform 0.2s ease' }}
-                  onMouseEnter={(e) => { if (!isSubmitting && !submitted) e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+                  onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    if (!isSubmitting && !submitted) {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }
+                  }}
+                  onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
                 >
-                    {isSubmitting ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                          aria-hidden="true"
-                        />
-                        Sending...
-                      </>
-                    ) : submitted ? (
-                      <>
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          className="me-2"
-                        >
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        Message Sent!
-                      </>
-                    ) : (
-                      'Send Message'
-                    )}
+                  {buttonContent}
                 </Button>
               </Form>
             </motion.div>
