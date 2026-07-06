@@ -196,7 +196,7 @@ const HeroSection = () => {
                 style={{
                   color: 'var(--text-muted)',
                   fontSize: '1.1rem',
-                  maxWidth: '500px',
+                  // maxWidth: '500px',
                   marginBottom: '2.5rem',
                   lineHeight: 1.8,
                 }}
